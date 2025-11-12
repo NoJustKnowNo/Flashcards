@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Times Tables Flashcards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+```
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+    }
+    
+    .container {
+        background: white;
+        border-radius: 20px;
+        padding: 15px;
+        max-width: 500px;
+        width: 100%;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    
+    h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 5px;
+        font-size: 1.5em;
+    }
+    
+    .subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 12px;
+        font-size: 0.85em;
+    }
+    
+    .grid-options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+    
+    .grid-button {
+        padding: 25px;
+        border: none;
+        border-radius: 15px;
+        font-size: 1.3em;
+        font-weight: bold;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s;
+        opacity: 0.6;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+    
+    .grid-button.selected {
+        opacity: 1;
+        transform: scale(1.05);
+        box-shadow: 0 0 0 4px white, 0 0 0 8px rgba(0,0,0,0.1);
+    }
+    
+    .grid-button:active {
+        transform: scale(0.95);
+    }
+    
+    .info-box {
+        background: #f3f4f6;
+        border-radius: 12px;
+        padding: 15px;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+    
+    .info-box p {
+        color: #666;
+        margin-bottom: 8px;
+        font-size: 0.9em;
+    }
+    
+    .info-box .big {
+        font-size: 1.5em;
+        font-weight: bold;
+        color: #8b5cf6;
+    }
+    
+    .start-button, .action-button {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 10px;
+        font-size: 1em;
+        font-weight: bold;
+        color: white;
+        cursor: pointer;
+        margin-bottom: 6px;
+        transition: all 0.3s;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+    
+    .start-button {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+    
+    .start-button:active {
+        transform: scale(0.98);
+    }
+    
+    .progress-bar {
+        background: #e5e7eb;
+        height: 6px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        overflow: hidden;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #10b981 0%, #3b82f6 100%);
+        transition: width 0.3s;
+    }
+    
+    .stats {
+        display: flex;
+        justify-content: space-around;
+        background: #f3f4f6;
+        border-radius: 10px;
+        padding: 8px;
+        margin-bottom: 10px;
+    }
+    
+    .stat {
+        text-align: center;
+    }
+    
+    .stat-value {
+        font-size: 1.3em;
+        font-weight: bold;
+    }
+    
+    .stat-label {
+        font-size: 0.7em;
+        color: #666;
+    }
+    
+    .flashcard {
+        background: linear-gradient(135deg, #dbeafe 0%, #e9d5ff 100%);
+        border-radius: 12px;
+        padding: 20px 15px;
+        text-align: center;
+        margin-bottom: 10px;
+        box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .question {
+        font-size: 2.2em;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 5px;
+    }
+    
+    .answer-shown {
+        font-size: 1.5em;
+        font-weight: bold;
+        color: #8b5cf6;
+    }
+    
+    .answer-display {
+        background: white;
+        border: 3px solid #8b5cf6;
+        border-radius: 10px;
+        padding: 12px;
+        font-size: 1.8em;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 10px;
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #333;
+    }
+    
+    .answer-display.empty {
+        color: #ccc;
+    }
+    
+    .number-pad {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+    
+    .number-button {
+        padding: 15px;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.5em;
+        font-weight: bold;
+        background: #3b82f6;
+        color: white;
+        cursor: pointer;
+        transition: all 0.2s;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+    
+    .number-button:active {
+        transform: scale(0.95);
+        background: #2563eb;
+    }
+    
+    .number-button.zero {
+        grid-column: 2;
+    }
+    
+    .number-button.backspace {
+        background: #ef4444;
+        font-size: 1.3em;
+    }
+    
+    .number-button.backspace:active {
+        background: #dc2626;
+    }
+    
+    .feedback {
+        padding: 10px;
+        border-radius: 10px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 0.95em;
+        margin-bottom: 10px;
+    }
+    
+    .feedback.correct {
+        background: #d1fae5;
+        color: #065f46;
+    }
+    
+    .feedback.incorrect {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+    
+    .button-row {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 6px;
+    }
+    
+    .button-row button {
+        flex: 1;
+    }
+    
+    .btn-primary {
+        background: #10b981;
+        color: white;
+    }
+    
+    .btn-primary:disabled {
+        background: #d1d5db;
+        cursor: not-allowed;
+    }
+    
+    .btn-secondary {
+        background: #8b5cf6;
+        color: white;
+    }
+    
+    .btn-secondary:disabled {
+        background: #d1d5db;
+        cursor: not-allowed;
+    }
+    
+    .btn-warning {
+        background: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
+        color: white;
+    }
+    
+    .btn-info {
+        background: #3b82f6;
+        color: white;
+    }
+    
+    .btn-dark {
+        background: #374151;
+        color: white;
+    }
+    
+    .trophy {
+        background: linear-gradient(135deg, #fbbf24 0%, #f97316 100%);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        color: white;
+        margin-bottom: 15px;
+    }
+    
+    .trophy-icon {
+        font-size: 2.5em;
+        margin-bottom: 8px;
+    }
+    
+    .trophy-title {
+        font-size: 1.3em;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    .missed-list {
+        max-height: 150px;
+        overflow-y: auto;
+        background: #fef2f2;
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 15px;
+    }
+    
+    .missed-list h3 {
+        text-align: center;
+        margin-bottom: 8px;
+        color: #333;
+        font-size: 1em;
+    }
+    
+    .missed-item {
+        text-align: center;
+        padding: 4px;
+        color: #666;
+        font-size: 0.9em;
+    }
+    
+    .grid-visualization {
+        background: #f9fafb;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 15px;
+        overflow-x: auto;
+    }
+    
+    .grid-visualization h3 {
+        text-align: center;
+        margin-bottom: 10px;
+        color: #333;
+        font-size: 1em;
+    }
+    
+    .grid-container {
+        display: grid;
+        gap: 2px;
+        justify-content: center;
+        margin: 0 auto;
+        max-width: 100%;
+    }
+    
+    .grid-cell {
+        aspect-ratio: 1;
+        border-radius: 3px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.65em;
+        font-weight: bold;
+        color: white;
+        min-width: 22px;
+        padding: 2px;
+    }
+    
+    .grid-cell.header {
+        background: #6b7280;
+        color: white;
+        font-weight: bold;
+    }
+    
+    .grid-cell.correct {
+        background: #10b981;
+    }
+    
+    .grid-cell.incorrect {
+        background: #ef4444;
+    }
+    
+    .grid-cell.skipped {
+        background: #d1d5db;
+        color: #9ca3af;
+    }
+    
+    .tips-section {
+        background: #eff6ff;
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 15px;
+        border-left: 4px solid #3b82f6;
+    }
+    
+    .tips-section h3 {
+        color: #1e40af;
+        font-size: 1em;
+        margin-bottom: 8px;
+    }
+    
+    .tip-item {
+        margin-bottom: 8px;
+        font-size: 0.85em;
+        color: #1e3a8a;
+        line-height: 1.4;
+    }
+    
+    .tip-title {
+        font-weight: bold;
+        color: #1e40af;
+    }
+    
+    .hidden {
+        display: none;
+    }
+    
+    .progress-text {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.85em;
+        color: #666;
+        margin-bottom: 5px;
+    }
+</style>
+```
+
+</head>
+<body>
+    <div class="container">
+        <!-- Home Screen -->
+        <div id="homeScreen">
+            <h1>Times Tables Practice</h1>
+            <p class="subtitle">Choose your challenge level</p>
+
+```
+        <div class="grid-options">
+            <button class="grid-button" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);" data-value="5">5×5</button>
+            <button class="grid-button" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);" data-value="10">10×10</button>
+            <button class="grid-button selected" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);" data-value="12">12×12</button>
+            <button class="grid-button" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);" data-value="15">15×15</button>
+        </div>
+        
+        <div class="info-box">
+            <p>You'll practice multiplication problems from:</p>
+            <p class="big">1×1 to <span id="selectedSize">12</span>×<span id="selectedSize2">12</span></p>
+            <p style="font-size: 0.85em; color: #999;">Total questions: <span id="totalQuestions">144</span></p>
+            
+            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #ddd;">
+                <label style="display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;">
+                    <input type="checkbox" id="excludeOnes" style="width: 18px; height: 18px; cursor: pointer;">
+                    <span style="font-size: 0.9em; color: #333;">Skip questions with 1's</span>
+                </label>
+            </div>
+        </div>
+        
+        <button class="start-button" onclick="startPractice()">Start Practice</button>
+    </div>
+    
+    <!-- Practice Screen -->
+    <div id="practiceScreen" class="hidden">
+        <h1 id="practiceTitle">Times Tables</h1>
+        <p class="subtitle" id="practiceSubtitle">Up to 12×12</p>
+        
+        <div style="margin-bottom: 10px;">
+            <div class="progress-text">
+                <span>Q <span id="currentQ">1</span>/<span id="totalQ">144</span></span>
+                <span id="progressPercent">1%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 1%"></div>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value" style="color: #10b981;" id="correctCount">0</div>
+                <div class="stat-label">Correct</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" style="color: #ef4444;" id="missedCount">0</div>
+                <div class="stat-label">Missed</div>
+            </div>
+        </div>
+        
+        <div class="flashcard">
+            <div class="question" id="questionText">1 × 1</div>
+            <div class="answer-shown hidden" id="answerText"></div>
+        </div>
+        
+        <div class="answer-display empty" id="answerDisplay">_</div>
+        
+        <div class="number-pad">
+            <button class="number-button" onclick="addNumber(7)">7</button>
+            <button class="number-button" onclick="addNumber(8)">8</button>
+            <button class="number-button" onclick="addNumber(9)">9</button>
+            <button class="number-button" onclick="addNumber(4)">4</button>
+            <button class="number-button" onclick="addNumber(5)">5</button>
+            <button class="number-button" onclick="addNumber(6)">6</button>
+            <button class="number-button" onclick="addNumber(1)">1</button>
+            <button class="number-button" onclick="addNumber(2)">2</button>
+            <button class="number-button" onclick="addNumber(3)">3</button>
+            <button class="number-button backspace" onclick="backspace()">⌫</button>
+            <button class="number-button zero" onclick="addNumber(0)">0</button>
+            <button class="number-button" style="background: #10b981; font-size: 1.5em;" onclick="checkAnswer()">✓</button>
+        </div>
+        
+        <div class="feedback hidden" id="feedbackBox"></div>
+        
+        <div class="button-row">
+            <button class="action-button btn-secondary" onclick="showAnswer()">Show Answer</button>
+            <button class="action-button btn-dark" onclick="returnHome()">Home</button>
+        </div>
+    </div>
+    
+    <!-- Results Screen -->
+    <div id="resultsScreen" class="hidden">
+        <h1>Practice Complete!</h1>
+        <p class="subtitle" style="margin-bottom: 15px;"></p>
+        
+        <div id="perfectTrophy" class="trophy hidden">
+            <div class="trophy-icon">🏆</div>
+            <div class="trophy-title">Perfect Score!</div>
+            <div>You got every question right!</div>
+        </div>
+        
+        <div class="info-box">
+            <div class="stats" style="margin: 0;">
+                <div class="stat">
+                    <div class="stat-value" style="color: #10b981;" id="finalCorrect">0</div>
+                    <div class="stat-label">Correct</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" style="color: #ef4444;" id="finalMissed">0</div>
+                    <div class="stat-label">Missed</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" style="color: #8b5cf6;" id="finalAccuracy">0%</div>
+                    <div class="stat-label">Accuracy</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="gridVisualization" class="grid-visualization">
+            <h3>Your Results Grid</h3>
+            <div id="gridContainer" class="grid-container"></div>
+            <div style="display: flex; justify-content: center; gap: 15px; margin-top: 10px; font-size: 0.8em;">
+                <span><span style="display: inline-block; width: 12px; height: 12px; background: #10b981; border-radius: 2px; vertical-align: middle;"></span> Correct</span>
+                <span><span style="display: inline-block; width: 12px; height: 12px; background: #ef4444; border-radius: 2px; vertical-align: middle;"></span> Missed</span>
+                <span id="skippedLegend" class="hidden"><span style="display: inline-block; width: 12px; height: 12px; background: #d1d5db; border-radius: 2px; vertical-align: middle;"></span> Skipped</span>
+            </div>
+        </div>
+        
+        <div id="allMissedList" class="missed-list hidden">
+            <h3>All Questions Missed:</h3>
+            <div id="allMissedContent"></div>
+        </div>
+        
+        <div id="tipsSection" class="tips-section hidden">
+            <h3>💡 Learning Tips</h3>
+            <div id="tipsContent"></div>
+        </div>
+        
+        <div id="perfectMissedSection" class="hidden">
+            <p style="text-align: center; color: #666; margin-bottom: 12px; font-size: 0.9em;">
+                You had some questions wrong earlier, but got them all right this time!
+            </p>
+        </div>
+        
+        <div id="missedSection" class="hidden">
+            <button class="action-button btn-warning" onclick="reviewMissed()">Practice Missed Questions</button>
+        </div>
+        
+        <button class="action-button btn-info" onclick="exportMissed()" id="exportButton">Export Missed Questions</button>
+        <button class="action-button btn-dark" onclick="returnHome()">Back to Home</button>
+    </div>
+</div>
+
+<script>
+    let maxNumber = 12;
+    let questionQueue = [];
+    let currentIndex = 0;
+    let currentQuestion = null;
+    let score = 0;
+    let missedQuestions = [];
+    let allMissedQuestions = [];
+    let allResults = {}; // Track all question results for grid visualization
+    let isReviewMode = false;
+    let excludeOnes = false;
+    let currentAnswer = '';
+    
+    // Home Screen Functions
+    document.querySelectorAll('.grid-button').forEach(button => {
+        button.addEventListener('click', function() {
+            document.querySelectorAll('.grid-button').forEach(b => b.classList.remove('selected'));
+            this.classList.add('selected');
+            maxNumber = parseInt(this.dataset.value);
+            document.getElementById('selectedSize').textContent = maxNumber;
+            document.getElementById('selectedSize2').textContent = maxNumber;
+            updateQuestionCount();
+        });
+    });
+    
+    document.getElementById('excludeOnes').addEventListener('change', function() {
+        updateQuestionCount();
+    });
+    
+    function updateQuestionCount() {
+        excludeOnes = document.getElementById('excludeOnes').checked;
+        let total = maxNumber * maxNumber;
+        if (excludeOnes) {
+            total = total - (maxNumber * 2 - 1);
+        }
+        document.getElementById('totalQuestions').textContent = total;
+    }
+    
+    function startPractice() {
+        generateQuestions();
+        showScreen('practiceScreen');
+        document.getElementById('practiceSubtitle').textContent = `Up to ${maxNumber}×${maxNumber}`;
+        loadQuestion();
+    }
+    
+    function generateQuestions() {
+        questionQueue = [];
+        for (let i = 1; i <= maxNumber; i++) {
+            for (let j = 1; j <= maxNumber; j++) {
+                if (excludeOnes && (i === 1 || j === 1)) {
+                    continue;
+                }
+                questionQueue.push({ num1: i, num2: j, answer: i * j });
+            }
+        }
+        shuffleArray(questionQueue);
+        currentIndex = 0;
+        score = 0;
+        missedQuestions = [];
+    }
+    
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+    
+    function loadQuestion() {
+        currentQuestion = questionQueue[currentIndex];
+        currentAnswer = '';
+        updateAnswerDisplay();
+        document.getElementById('questionText').textContent = `${currentQuestion.num1} × ${currentQuestion.num2}`;
+        document.getElementById('feedbackBox').classList.add('hidden');
+        document.getElementById('answerText').classList.add('hidden');
+        
+        updateProgress();
+    }
+    
+    function updateAnswerDisplay() {
+        const display = document.getElementById('answerDisplay');
+        if (currentAnswer === '') {
+            display.textContent = '_';
+            display.classList.add('empty');
+        } else {
+            display.textContent = currentAnswer;
+            display.classList.remove('empty');
+        }
+    }
+    
+    function addNumber(num) {
+        if (document.getElementById('feedbackBox').classList.contains('hidden')) {
+            currentAnswer += num.toString();
+            updateAnswerDisplay();
+        }
+    }
+    
+    function backspace() {
+        if (document.getElementById('feedbackBox').classList.contains('hidden')) {
+            currentAnswer = currentAnswer.slice(0, -1);
+            updateAnswerDisplay();
+        }
+    }
+    
+    function updateProgress() {
+        const progress = ((currentIndex + 1) / questionQueue.length) * 100;
+        document.getElementById('progressFill').style.width = progress + '%';
+        document.getElementById('currentQ').textContent = currentIndex + 1;
+        document.getElementById('totalQ').textContent = questionQueue.length;
+        document.getElementById('progressPercent').textContent = Math.round(progress) + '%';
+        document.getElementById('correctCount').textContent = score;
+        document.getElementById('missedCount').textContent = missedQuestions.length;
+    }
+    
+    function checkAnswer() {
+        if (currentAnswer === '') return;
+        
+        const userAnswer = parseInt(currentAnswer);
+        const isCorrect = userAnswer === currentQuestion.answer;
+        const feedbackBox = document.getElementById('feedbackBox');
+        
+        // Track result for grid visualization
+        const key = `${currentQuestion.num1},${currentQuestion.num2}`;
+        if (!allResults[key]) {
+            allResults[key] = { num1: currentQuestion.num1, num2: currentQuestion.num2, correct: isCorrect };
+        } else if (!isCorrect) {
+            // If we got it wrong before and wrong again, keep it as incorrect
+            allResults[key].correct = false;
+        }
+        // If correct now but was wrong before, it stays wrong in allResults (showing cumulative mistakes)
+        
+        feedbackBox.classList.remove('hidden', 'correct', 'incorrect');
+        feedbackBox.classList.add(isCorrect ? 'correct' : 'incorrect');
+        
+        if (isCorrect) {
+            feedbackBox.textContent = '✓ Correct! Great job!';
+            score++;
+        } else {
+            feedbackBox.textContent = `✗ Not quite! The answer was ${currentQuestion.answer}`;
+            missedQuestions.push(currentQuestion);
+            const isDuplicate = allMissedQuestions.some(q => 
+                q.num1 === currentQuestion.num1 && q.num2 === currentQuestion.num2
+            );
+            if (!isDuplicate) {
+                allMissedQuestions.push(currentQuestion);
+            }
+        }
+        
+        setTimeout(() => {
+            currentIndex++;
+            if (currentIndex >= questionQueue.length) {
+                showResults();
+            } else {
+                loadQuestion();
+            }
+        }, 1500);
+    }
+    
+    function showAnswer() {
+        document.getElementById('answerText').textContent = `= ${currentQuestion.answer}`;
+        document.getElementById('answerText').classList.remove('hidden');
+    }
+    
+    function showResults() {
+        const accuracy = Math.round((score / questionQueue.length) * 100);
+        
+        document.getElementById('finalCorrect').textContent = score;
+        document.getElementById('finalMissed').textContent = missedQuestions.length;
+        document.getElementById('finalAccuracy').textContent = accuracy + '%';
+        
+        // Generate grid visualization
+        generateGrid();
+        
+        // Show all missed questions list if there are any
+        if (allMissedQuestions.length > 0) {
+            document.getElementById('allMissedList').classList.remove('hidden');
+            const missedContent = document.getElementById('allMissedContent');
+            missedContent.innerHTML = '';
+            allMissedQuestions.forEach(q => {
+                const div = document.createElement('div');
+                div.className = 'missed-item';
+                div.textContent = `${q.num1} × ${q.num2} = ${q.answer}`;
+                missedContent.appendChild(div);
+            });
+            
+            // Generate learning tips
+            generateTips();
+        } else {
+            document.getElementById('allMissedList').classList.add('hidden');
+            document.getElementById('tipsSection').classList.add('hidden');
+        }
+        
+        // Show appropriate sections
+        if (missedQuestions.length === 0) {
+            document.getElementById('perfectTrophy').classList.remove('hidden');
+            document.getElementById('missedSection').classList.add('hidden');
+            
+            if (allMissedQuestions.length > 0) {
+                document.getElementById('perfectMissedSection').classList.remove('hidden');
+            } else {
+                document.getElementById('perfectMissedSection').classList.add('hidden');
+            }
+        } else {
+            document.getElementById('perfectTrophy').classList.add('hidden');
+            document.getElementById('perfectMissedSection').classList.add('hidden');
+            document.getElementById('missedSection').classList.remove('hidden');
+        }
+        
+        // Show/hide export button based on whether there are missed questions
+        if (allMissedQuestions.length > 0) {
+            document.getElementById('exportButton').classList.remove('hidden');
+        } else {
+            document.getElementById('exportButton').classList.add('hidden');
+        }
+        
+        showScreen('resultsScreen');
+    }
+    
+    function generateGrid() {
+        const gridContainer = document.getElementById('gridContainer');
+        gridContainer.innerHTML = '';
+        // Add 1 to account for header row/column
+        gridContainer.style.gridTemplateColumns = `repeat(${maxNumber + 1}, 1fr)`;
+        
+        // Show skipped legend if ones were excluded
+        if (excludeOnes) {
+            document.getElementById('skippedLegend').classList.remove('hidden');
+        } else {
+            document.getElementById('skippedLegend').classList.add('hidden');
+        }
+        
+        // Top-left corner cell (empty)
+        const cornerCell = document.createElement('div');
+        cornerCell.className = 'grid-cell header';
+        cornerCell.textContent = '×';
+        gridContainer.appendChild(cornerCell);
+        
+        // Column headers (1 to maxNumber)
+        for (let j = 1; j <= maxNumber; j++) {
+            const headerCell = document.createElement('div');
+            headerCell.className = 'grid-cell header';
+            headerCell.textContent = j;
+            gridContainer.appendChild(headerCell);
+        }
+        
+        // Rows with row header + cells
+        for (let i = 1; i <= maxNumber; i++) {
+            // Row header
+            const rowHeader = document.createElement('div');
+            rowHeader.className = 'grid-cell header';
+            rowHeader.textContent = i;
+            gridContainer.appendChild(rowHeader);
+            
+            // Data cells
+            for (let j = 1; j <= maxNumber; j++) {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                
+                const key = `${i},${j}`;
+                const result = allResults[key];
+                const answer = i * j;
+                
+                if (excludeOnes && (i === 1 || j === 1)) {
+                    cell.classList.add('skipped');
+                    cell.textContent = '—';
+                } else if (result) {
+                    cell.classList.add(result.correct ? 'correct' : 'incorrect');
+                    cell.textContent = answer;
+                } else {
+                    // Not attempted yet (shouldn't happen in normal flow)
+                    cell.classList.add('correct');
+                    cell.textContent = answer;
+                }
+                
+                gridContainer.appendChild(cell);
+            }
+        }
+    }
+    
+    function generateTips() {
+        const tipsSection = document.getElementById('tipsSection');
+        const tipsContent = document.getElementById('tipsContent');
+        tipsContent.innerHTML = '';
+        
+        // Analyze which specific numbers appear in missed questions
+        const missedNumbers = new Set();
+        allMissedQuestions.forEach(q => {
+            missedNumbers.add(q.num1);
+            missedNumbers.add(q.num2);
+        });
+        
+        const tips = [];
+        
+        // Only add tips for numbers that were actually missed
+        if (missedNumbers.has(9)) {
+            tips.push({
+                title: 'Rule of 9s:',
+                text: 'For 9×n, the answer\'s digits add up to 9. Also: (n-1) in tens place, (9-that) in ones. Example: 9×7 = 63 (6+3=9). Finger trick: Hold down the nth finger, count before and after!'
+            });
+        }
+        
+        if (missedNumbers.has(8)) {
+            tips.push({
+                title: 'Rule of 8s:',
+                text: 'Double, double, double! 8×6 = 6+6=12, 12+12=24, 24+24=48. Or think: 8×n = (10×n) - (2×n). Example: 8×7 = 70 - 14 = 56'
+            });
+        }
+        
+        if (missedNumbers.has(7)) {
+            tips.push({
+                title: 'Rule of 7s:',
+                text: 'Use 5s + 2s: 7×6 = (5×6) + (2×6) = 30 + 12 = 42. Or: 7×n = (10×n) - (3×n). Example: 7×8 = 80 - 24 = 56'
+            });
+        }
+        
+        if (missedNumbers.has(6)) {
+            tips.push({
+                title: 'Rule of 6s:',
+                text: 'For even numbers, notice the pattern: 6×2=12, 6×4=24, 6×6=36, 6×8=48. Each increases by 12! Or: 6×n = (5×n) + n'
+            });
+        }
+        
+        if (missedNumbers.has(12)) {
+            tips.push({
+                title: 'Rule of 12s:',
+                text: '12×n = (10×n) + (2×n). Example: 12×7 = 70 + 14 = 84. Think of it as a dozen!'
+            });
+        }
+        
+        if (missedNumbers.has(11) && maxNumber >= 11) {
+            tips.push({
+                title: 'Rule of 11s:',
+                text: 'For single digits, just repeat the digit: 11×6 = 66, 11×8 = 88. Easy!'
+            });
+        }
+        
+        if (missedNumbers.has(4)) {
+            tips.push({
+                title: 'Rule of 4s:',
+                text: 'Double twice! 4×7 = 7+7=14, 14+14=28. Or think: 4×n = (2×n)×2'
+            });
+        }
+        
+        if (missedNumbers.has(3)) {
+            tips.push({
+                title: 'Rule of 3s:',
+                text: 'Count by 3s or add the number to itself twice: 3×8 = 8+8+8 = 24'
+            });
+        }
+        
+        // Add a general practice tip if we have tips to show
+        if (tips.length > 0) {
+            tips.push({
+                title: '💪 Practice Strategy:',
+                text: 'Write out each missed problem 5 times. Say the answer out loud as you write. This builds muscle memory!'
+            });
+        }
+        
+        // Display tips
+        tips.forEach(tip => {
+            const tipDiv = document.createElement('div');
+            tipDiv.className = 'tip-item';
+            tipDiv.innerHTML = `<span class="tip-title">${tip.title}</span> ${tip.text}`;
+            tipsContent.appendChild(tipDiv);
+        });
+        
+        if (tips.length > 0) {
+            tipsSection.classList.remove('hidden');
+        } else {
+            tipsSection.classList.add('hidden');
+        }
+    }
+    
+    function reviewMissed() {
+        questionQueue = [...missedQuestions];
+        shuffleArray(questionQueue);
+        currentIndex = 0;
+        score = 0;
+        missedQuestions = [];
+        isReviewMode = true;
+        showScreen('practiceScreen');
+        document.getElementById('practiceTitle').textContent = 'Review Mode';
+        document.getElementById('practiceSubtitle').textContent = 'Practicing missed questions';
+        loadQuestion();
+    }
+    
+    function exportMissed() {
+        const text = allMissedQuestions.map(q => `${q.num1} × ${q.num2} = _______`).join('\n');
+        const blob = new Blob([text], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'missed-questions.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+    
+    function returnHome() {
+        isReviewMode = false;
+        allMissedQuestions = [];
+        allResults = {};
+        document.getElementById('practiceTitle').textContent = 'Times Tables';
+        showScreen('homeScreen');
+    }
+    
+    function showScreen(screenId) {
+        document.getElementById('homeScreen').classList.add('hidden');
+        document.getElementById('practiceScreen').classList.add('hidden');
+        document.getElementById('resultsScreen').classList.add('hidden');
+        document.getElementById(screenId).classList.remove('hidden');
+    }
+    
+    // iOS touch support
+    document.querySelectorAll('button').forEach(button => {
+        button.addEventListener('touchstart', function(e) {
+            // Prevent default but allow the click to propagate
+        }, { passive: true });
+    });
+</script>
+```
+
+</body>
+</html>
